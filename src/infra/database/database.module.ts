@@ -6,7 +6,7 @@ import { PrismaAnswerAttachmentsRepository } from './prisma/repositories/prisma-
 import { PrismaAnswersRepository } from './prisma/repositories/prisma-answers-repository'
 import { PrismaAnswerCommentsRepository } from './prisma/repositories/prisma-answer-comments-repository'
 import { PrismaQuestionAttachmentsRepository } from './prisma/repositories/prisma-question-attachments-repository'
-import { QuestionsRepository } from '@/domain/forum/application/repositories/question-repository'
+import { QuestionsRepository } from '@/domain/forum/application/repositories/questions-repository'
 
 @Module({
   providers: [
