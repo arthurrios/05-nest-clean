@@ -1,4 +1,3 @@
-import { Slug } from '@/domain/forum/enterprise/entities/value-objects/slug'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { INestApplication } from '@nestjs/common'
@@ -33,20 +32,18 @@ describe('Get question by slug (E2E)', () => {
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
-    await questionFactory.makePrismaQuestion({
+    const question = await questionFactory.makePrismaQuestion({
       authorId: user.id,
-      title: 'Question 01',
-      slug: Slug.create('question-01'),
     })
 
     const response = await request(app.getHttpServer())
-      .get(`/questions/question-01`)
+      .get(`/questions/${question.slug.value}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
-      question: expect.objectContaining({ title: 'Question 01' }),
+      question: expect.objectContaining({ title: question.title }),
     })
   })
 })
