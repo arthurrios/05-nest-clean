@@ -2,7 +2,7 @@ import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/fetch-recent-questions'
-import { QuestionsPresenter } from '../presenters/question-presenter'
+import { QuestionPresenter } from '../presenters/question-presenter'
 
 const pageQueryParamSchema = z
   .string()
@@ -31,6 +31,6 @@ export class FetchRecentQuestionsController {
 
     const questions = result.value.questions
 
-    return { questions: questions.map(QuestionsPresenter.toHTTP) }
+    return { questions: questions.map(QuestionPresenter.toHTTP) }
   }
 }
