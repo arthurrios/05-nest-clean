@@ -28,7 +28,7 @@ export class PrismaAnswerCommentsRepository
     { page }: PaginationParams,
   ): Promise<AnswerComment[]> {
     const answerComments = await this.prisma.comment.findMany({
-      where: { questionId: answerId },
+      where: { answerId },
       orderBy: {
         createdAt: 'desc',
       },
