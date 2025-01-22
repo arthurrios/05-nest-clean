@@ -40,8 +40,6 @@ export class QuestionAttachmentFactory {
       },
     })
 
-    // PrismaAttachmentMapper.toPrisma(questionAttachment),
-
     return questionAttachment
   }
 }
