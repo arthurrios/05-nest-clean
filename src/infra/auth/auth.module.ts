@@ -1,4 +1,4 @@
-import { EnvService } from './../env.service'
+import { EnvService } from '../env/env.service'
 import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
