@@ -6,9 +6,13 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments-repository'
 import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'
 import { makeStudent } from 'test/factories/make-student'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
+import { makeAttachment } from 'test/factories/make-attachment'
+import { makeAnswerAttachment } from 'test/factories/make-answer-attachments'
 
 let inMemoryStudentsRepository: InMemoryStudentsRepository
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryAnswersRepository: InMemoryAnswersRepository
 let sut: FetchQuestionAnswersUseCase
 
@@ -17,8 +21,10 @@ describe('Fetch Question Answers', () => {
     inMemoryStudentsRepository = new InMemoryStudentsRepository()
     inMemoryAnswerAttachmentsRepository =
       new InMemoryAnswerAttachmentsRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
     inMemoryAnswersRepository = new InMemoryAnswersRepository(
       inMemoryAnswerAttachmentsRepository,
+      inMemoryAttachmentsRepository,
       inMemoryStudentsRepository,
     )
     sut = new FetchQuestionAnswersUseCase(inMemoryAnswersRepository)
@@ -45,6 +51,31 @@ describe('Fetch Question Answers', () => {
     await inMemoryAnswersRepository.create(answer2)
     await inMemoryAnswersRepository.create(answer3)
 
+    const attachment = makeAttachment({
+      title: 'Some attachment',
+    })
+
+    inMemoryAttachmentsRepository.items.push(attachment)
+
+    inMemoryAnswerAttachmentsRepository.items.push(
+      makeAnswerAttachment({
+        answerId: answer1.id,
+        attachmentId: attachment.id,
+      }),
+    )
+    inMemoryAnswerAttachmentsRepository.items.push(
+      makeAnswerAttachment({
+        answerId: answer2.id,
+        attachmentId: attachment.id,
+      }),
+    )
+    inMemoryAnswerAttachmentsRepository.items.push(
+      makeAnswerAttachment({
+        answerId: answer3.id,
+        attachmentId: attachment.id,
+      }),
+    )
+
     const result = await sut.execute({
       questionId: 'question-1',
       page: 1,
@@ -56,14 +87,29 @@ describe('Fetch Question Answers', () => {
         expect.objectContaining({
           author: 'John Doe',
           answerId: answer1.id,
+          attachments: [
+            expect.objectContaining({
+              title: 'Some attachment',
+            }),
+          ],
         }),
         expect.objectContaining({
           author: 'John Doe',
           answerId: answer2.id,
+          attachments: [
+            expect.objectContaining({
+              title: 'Some attachment',
+            }),
+          ],
         }),
         expect.objectContaining({
           author: 'John Doe',
           answerId: answer3.id,
+          attachments: [
+            expect.objectContaining({
+              title: 'Some attachment',
+            }),
+          ],
         }),
       ]),
     )

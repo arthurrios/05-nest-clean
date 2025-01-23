@@ -8,7 +8,7 @@ import {
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { FetchQuestionAnswersUseCase } from '@/domain/forum/application/use-cases/fetch-question-answers'
-import { AnswerWithAuthorPresenter } from '../presenters/answer-with-author-presenter'
+import { AnswerWithAuthorPresenter } from '../presenters/answer-details-presenter'
 
 const pageQueryParamSchema = z
   .string()

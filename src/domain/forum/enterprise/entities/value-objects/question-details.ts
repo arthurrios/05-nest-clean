@@ -1,23 +1,22 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ValueObject } from '@/core/entities/value-object'
-import { AnswerAttachmentList } from '../answer-attachment-list'
+import { Slug } from './slug'
+import { Attachment } from '../attachment'
 
-export interface AnswerWithAuthorProps {
-  answerId: UniqueEntityID
+export interface QuestionDetailsProps {
   questionId: UniqueEntityID
   authorId: UniqueEntityID
   author: string
+  title: string
+  slug: Slug
   content: string
-  attachments: AnswerAttachmentList
+  attachments: Attachment[]
+  bestAnswerId?: UniqueEntityID | null
   createdAt: Date
   updatedAt: Date | null
 }
 
-export class AnswerWithAuthor extends ValueObject<AnswerWithAuthorProps> {
-  get answerId() {
-    return this.props.answerId
-  }
-
+export class QuestionDetails extends ValueObject<QuestionDetailsProps> {
   get questionId() {
     return this.props.questionId
   }
@@ -30,8 +29,20 @@ export class AnswerWithAuthor extends ValueObject<AnswerWithAuthorProps> {
     return this.props.author
   }
 
+  get title() {
+    return this.props.title
+  }
+
+  get slug() {
+    return this.props.slug
+  }
+
   get attachments() {
     return this.props.attachments
+  }
+
+  get bestAnswerId() {
+    return this.props.bestAnswerId
   }
 
   get content() {
@@ -46,7 +57,7 @@ export class AnswerWithAuthor extends ValueObject<AnswerWithAuthorProps> {
     return this.props.updatedAt
   }
 
-  static create(props: AnswerWithAuthorProps) {
-    return new AnswerWithAuthor(props)
+  static create(props: QuestionDetailsProps) {
+    return new QuestionDetails(props)
   }
 }

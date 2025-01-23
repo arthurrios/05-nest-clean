@@ -1,7 +1,7 @@
 import { right, type Either } from '@/core/either'
 import { AnswersRepository } from '../repositories/answers-repository'
 import { Injectable } from '@nestjs/common'
-import { AnswerWithAuthor } from '../../enterprise/entities/value-objects/answer-with-author'
+import { AnswerDetails } from '../../enterprise/entities/value-objects/answer-details'
 
 interface FetchQuestionAnswersUseCaseRequest {
   questionId: string
@@ -10,7 +10,7 @@ interface FetchQuestionAnswersUseCaseRequest {
 
 type FetchQuestionAnswersUseCaseResponse = Either<
   null,
-  { answers: AnswerWithAuthor[] }
+  { answers: AnswerDetails[] }
 >
 
 @Injectable()

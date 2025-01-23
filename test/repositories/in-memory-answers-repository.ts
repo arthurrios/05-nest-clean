@@ -1,16 +1,18 @@
 import { DomainEvents } from '@/core/events/domain-events'
 import type { PaginationParams } from '@/core/repositories/pagination-params'
-import type { AnswerAttachmentsRepository } from '@/domain/forum/application/repositories/answer-attachments-repository'
 import type { AnswersRepository } from '@/domain/forum/application/repositories/answers-repository'
 import type { Answer } from '@/domain/forum/enterprise/entities/answer'
-import { AnswerWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/answer-with-author'
+import { AnswerDetails } from '@/domain/forum/enterprise/entities/value-objects/answer-details'
 import { InMemoryStudentsRepository } from './in-memory-students-repository'
+import { InMemoryAttachmentsRepository } from './in-memory-attachments-repository'
+import { InMemoryAnswerAttachmentsRepository } from './in-memory-answer-attachments-repository'
 
 export class InMemoryAnswersRepository implements AnswersRepository {
   public items: Answer[] = []
 
   constructor(
-    private answerAttachmentsRepository: AnswerAttachmentsRepository,
+    private answerAttachmentsRepository: InMemoryAnswerAttachmentsRepository,
+    private attachmentsRepository: InMemoryAttachmentsRepository,
     private studentsRepository: InMemoryStudentsRepository,
   ) {}
 
@@ -50,13 +52,35 @@ export class InMemoryAnswersRepository implements AnswersRepository {
           )
         }
 
-        return AnswerWithAuthor.create({
+        const answerAttachments = this.answerAttachmentsRepository.items.filter(
+          (answerAttachment) => {
+            return answerAttachment.answerId.equals(answer.id)
+          },
+        )
+
+        const attachments = answerAttachments.map((answerAttachment) => {
+          const attachment = this.attachmentsRepository.items.find(
+            (attachment) => {
+              return attachment.id.equals(answerAttachment.attachmentId)
+            },
+          )
+
+          if (!attachment) {
+            throw new Error(
+              `Author with ID "${answerAttachment.attachmentId.toString()}" does not exist. `,
+            )
+          }
+
+          return attachment
+        })
+
+        return AnswerDetails.create({
           answerId: answer.id,
           questionId: answer.questionId,
           authorId: answer.authorId,
           author: author.name,
           content: answer.content,
-          attachments: answer.attachments,
+          attachments,
           createdAt: answer.createdAt,
           updatedAt: answer.updatedAt,
         })
